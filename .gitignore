@@ -1,3 +1,8 @@
-kernel-list-to-sqlite
-stdio-mcp
+# Ignore the binary in root directory
+/kernel-list-to-sqlite
+!/cmd/kernel-list-to-sqlite/
+
+/stdio-mcp
+!/cmd/stdio-mcp/
+
 commits.db
