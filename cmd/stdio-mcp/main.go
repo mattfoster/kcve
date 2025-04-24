@@ -45,6 +45,8 @@ func main() {
 		panic(err)
 	}
 
+	registerKernelCveList(db, server)
+
 	// Start the server
 	err = server.Serve()
 	if err != nil {
