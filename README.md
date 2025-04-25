@@ -7,7 +7,7 @@ See: https://lore.kernel.org/linux-cve-announce/_/text/mirror/ for details.
 ## Commands
 
 * `kernel-list-to-sqlite` - Download the Kernel CVE list into a temporary dir and save the contents into an sqlite database.
-* `stio-mcp` - stdio MCP server which provides the `get_kernel_cve_info` tool.
+* `stio-mcp` - stdio MCP server which provides the `get_kernel_cve_info` and `search_kernel_cve_info` tools.
 
 ## Config
 
