@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
@@ -38,7 +39,27 @@ func main() {
 		if err != nil {
 			return nil, err
 		}
-		return mcp.NewToolResponse(mcp.NewTextContent(commit.FileContent)), nil
+		json, err := json.Marshal(commit)
+		if err != nil {
+			return nil, err
+		}
+		return mcp.NewToolResponse(mcp.NewTextContent(string(json))), nil
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	err = server.RegisterTool("search_kernel_cve_info", "Search kernel vulnerability information for specific keywords", func(arguments KernelCveSearchArguments) (*mcp.ToolResponse, error) {
+		commit, err := searchKernelCveInfo(db, arguments.Keyword)
+		if err != nil {
+			return nil, err
+		}
+		json, err := json.Marshal(commit)
+		if err != nil {
+			return nil, err
+		}
+		return mcp.NewToolResponse(mcp.NewTextContent(string(json))), nil
 	})
 
 	if err != nil {
