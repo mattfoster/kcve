@@ -34,7 +34,7 @@ func main() {
 	// Create a new server with the transport
 	server := mcp.NewServer(serverTransport)
 
-	err = server.RegisterTool("get_kernel_cve_info", "Get information on a CVE affecting the Linux kernel", func(arguments KernelCveArguments) (*mcp.ToolResponse, error) {
+	err = server.RegisterTool("get_kernel_cve_info", "Get information on a CVE affecting the Linux kernel, use this to obtain more information about a CVE affecting the kernel.", func(arguments KernelCveArguments) (*mcp.ToolResponse, error) {
 		commit, err := getKernelCveInfo(db, arguments.CVE)
 		if err != nil {
 			return nil, err
