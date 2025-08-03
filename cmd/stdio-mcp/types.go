@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"os"
 )
 
 type KernelCveArguments struct {
@@ -32,8 +31,7 @@ type KernelCveSearchResponse struct {
 func getKernelCveInfo(db *sql.DB, cve string) (*KernelCveResponse, error) {
 	rows, err := db.Query("SELECT * FROM commits WHERE cve = ?", cve)
 	if err != nil {
-		fmt.Printf("error querying database: %v", err)
-		os.Exit(1)
+		return nil, fmt.Errorf("error querying database: %v", err)
 	}
 	defer rows.Close()
 
@@ -48,8 +46,7 @@ func getKernelCveInfo(db *sql.DB, cve string) (*KernelCveResponse, error) {
 			&commit.CommitMessage,
 			&commit.FileContent)
 		if err != nil {
-			fmt.Printf("error scanning database: %v", err)
-			os.Exit(1)
+			return nil, fmt.Errorf("error scanning database: %v", err)
 		}
 		return &commit, nil
 	}
@@ -59,8 +56,7 @@ func getKernelCveInfo(db *sql.DB, cve string) (*KernelCveResponse, error) {
 func searchKernelCveInfo(db *sql.DB, keyword string) (*KernelCveSearchResponse, error) {
 	rows, err := db.Query("SELECT * FROM commits WHERE file_content LIKE ? OR message LIKE ?", "%"+keyword+"%", "%"+keyword+"%")
 	if err != nil {
-		fmt.Printf("error querying database: %v", err)
-		os.Exit(1)
+		return nil, fmt.Errorf("error querying database: %v", err)
 	}
 	defer rows.Close()
 
@@ -78,8 +74,7 @@ func searchKernelCveInfo(db *sql.DB, keyword string) (*KernelCveSearchResponse, 
 		)
 		commit.FileContent = "" // File content makes the response too large.
 		if err != nil {
-			fmt.Printf("error scanning database: %v", err)
-			os.Exit(1)
+			return nil, fmt.Errorf("error scanning database: %v", err)
 		}
 		results = append(results, commit)
 	}
