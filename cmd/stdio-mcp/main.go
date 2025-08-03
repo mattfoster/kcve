@@ -90,6 +90,24 @@ func main() {
 		return mcp.NewToolResultText(string(jsonData)), nil
 	})
 
+	latestCveInfoTool := mcp.NewTool("latest_kernel_cve_info",
+		mcp.WithDescription("Get information for the latest kernel CVEs"),
+	)
+
+	s.AddTool(latestCveInfoTool, func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+		results, err := latestKernelCveInfo(db)
+		if err != nil {
+			return mcp.NewToolResultError(err.Error()), nil
+		}
+
+		jsonData, err := json.Marshal(results)
+		if err != nil {
+			return mcp.NewToolResultError(err.Error()), nil
+		}
+
+		return mcp.NewToolResultText(string(jsonData)), nil
+	})
+
 	// Start the server
 	if err := server.ServeStdio(s); err != nil {
 		fmt.Printf("Server error: %v\n", err)

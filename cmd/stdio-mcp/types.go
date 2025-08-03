@@ -80,3 +80,31 @@ func searchKernelCveInfo(db *sql.DB, keyword string) (*KernelCveSearchResponse, 
 	}
 	return &KernelCveSearchResponse{Count: len(results), Results: results}, nil
 }
+
+func latestKernelCveInfo(db *sql.DB) (*KernelCveSearchResponse, error) {
+	rows, err := db.Query("SELECT * FROM commits ORDER BY commit_date DESC LIMIT 10")
+	if err != nil {
+		return nil, fmt.Errorf("error querying database: %v", err)
+	}
+	defer rows.Close()
+
+	results := []KernelCveResponse{}
+	for rows.Next() {
+		var commit KernelCveResponse
+		err = rows.Scan(
+			&commit.CommitHash,
+			&commit.CVE,
+			&commit.CommitAuthor,
+			&commit.CommitEmail,
+			&commit.CommitDate,
+			&commit.CommitMessage,
+			&commit.FileContent,
+		)
+		commit.FileContent = "" // File content makes the response too large.
+		if err != nil {
+			return nil, fmt.Errorf("error scanning database: %v", err)
+		}
+		results = append(results, commit)
+	}
+	return &KernelCveSearchResponse{Count: len(results), Results: results}, nil
+}
