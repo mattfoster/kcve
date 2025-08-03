@@ -54,7 +54,7 @@ func getKernelCveInfo(db *sql.DB, cve string) (*KernelCveResponse, error) {
 }
 
 func searchKernelCveInfo(db *sql.DB, keyword string) (*KernelCveSearchResponse, error) {
-	rows, err := db.Query("SELECT * FROM commits WHERE file_content LIKE ? OR message LIKE ?", "%"+keyword+"%", "%"+keyword+"%")
+	rows, err := db.Query("SELECT * FROM commits WHERE file_content LIKE ? OR message LIKE ? LIMIT 100", "%"+keyword+"%", "%"+keyword+"%")
 	if err != nil {
 		return nil, fmt.Errorf("error querying database: %v", err)
 	}
